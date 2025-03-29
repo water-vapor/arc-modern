@@ -80,34 +80,6 @@ This application is configured for easy deployment to GitHub Pages. You can depl
    - Set Source to "GitHub Actions"
 4. Push to the main branch, and the GitHub Action will automatically build and deploy the site
 
-#### Manual Deployment
-
-1. Update the `publicPath` in `vue.config.js` with your repository name if needed
-2. Build the project:
-   ```
-   npm run build
-   ```
-3. Deploy to GitHub Pages:
-   ```
-   npm install -g gh-pages
-   npm run deploy
-   ```
-
-### Accessing Your Deployed Application
-
-After deployment, your application will be available at:
-`https://water-vapor.github.io/arc-modern/`
-
-## Built With
-
-- [Vue.js](https://vuejs.org/) - The web framework used
-- [Vuex](https://vuex.vuejs.org/) - State management
-- [GitHub API](https://docs.github.com/en/rest) - For accessing ARC task data
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Acknowledgments
 
 - Original ARC challenge by François Chollet
