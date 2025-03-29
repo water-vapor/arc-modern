@@ -1,6 +1,6 @@
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production'
-    ? '/arc-modern/'  // Replace with your repository name
+    ? '/arc-modern/'  // Repository name on water-vapor's GitHub
     : '/',
   outputDir: 'dist',
   assetsDir: '',
