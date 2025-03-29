@@ -1,9 +1,18 @@
 module.exports = {
-  transpileDependencies: true,
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/arc-modern/'  // Replace with your repository name
+    : '/',
+  outputDir: 'dist',
+  assetsDir: '',
+  productionSourceMap: false,
+  css: {
+    sourceMap: true
+  },
   configureWebpack: {
-    resolve: {
-      alias: {
-        '@': require('path').resolve(__dirname, 'src')
+    optimization: {
+      splitChunks: {
+        minSize: 10000,
+        maxSize: 250000,
       }
     }
   }

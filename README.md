@@ -1,85 +1,112 @@
-# ARC Modern Interface
+# ARC-AGI Modern Interface
 
-A modern, responsive web interface for the Abstract Reasoning Challenge (ARC).
+A modern web interface for the Abstraction and Reasoning Corpus (ARC) challenge, supporting both the original ARC and ARC-AGI-2.
 
 ## Overview
 
-This application provides a sleek, user-friendly interface for interacting with ARC puzzles. It maintains all the functionality of the original interface but with a modern design and improved user experience.
+This application provides an intuitive interface for exploring and solving ARC puzzles. It features:
 
-## Features
-
-- Modern UI with responsive design
-- Load tasks from GitHub repositories, local files, or by index
-- Interactive grid editor with multiple tools:
-  - Direct cell editing
-  - Selection tool for editing multiple cells at once
-  - Flood fill tool
-- Task navigation (previous, next, random)
-- Test case navigation
+- Support for both ARC-AGI 1 and ARC-AGI 2 challenges
+- A clean, responsive UI for various screen sizes
+- Interactive grid editing with multiple tools
+- Example magnification for better pattern recognition
+- Task navigation with 1-indexed display
 - Solution validation
-- Grid resizing
-- Symbol number display toggle
-- Clear error/success notifications
 
-## Technology Stack
+## Getting Started
 
-- Vue.js 3 with Composition API
-- Vuex for state management 
-- SCSS for styling
-- Responsive design that works on desktop and mobile devices
+### Prerequisites
 
-## Running the Application
+- Node.js (v14 or higher)
+- npm or yarn
 
-1. Install dependencies:
-```
-cd arc-modern
-npm install
-```
+### Installation
 
-2. Start the development server:
-```
-npm run serve
-```
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/arc-modern.git
+   cd arc-modern
+   ```
 
-3. Build for production:
-```
-npm run build
-```
+2. Install dependencies:
+   ```
+   npm install
+   ```
 
-## Project Structure
+3. Run the development server:
+   ```
+   npm run serve
+   ```
 
-```
-arc-modern/
-├── public/               # Public assets
-├── src/
-│   ├── assets/           # Static assets
-│   │   └── styles/       # Global styles
-│   ├── components/       # Vue components
-│   ├── store/            # Vuex store
-│   ├── utils/            # Utility functions
-│   ├── views/            # Page components
-│   ├── App.vue           # Root component
-│   ├── main.js           # Application entry point
-│   └── router/           # Vue Router configuration
-└── package.json          # Project dependencies
-```
-
-## Components
-
-- **GridComponent**: Displays and allows interaction with a grid
-- **SymbolPicker**: Allows selecting a symbol (color) for grid cells
-- **Toolbar**: Tools for editing the grid and changing settings
-- **TaskPairPreview**: Displays an input-output pair example
-- **TaskControls**: Navigation and control buttons for tasks
-- **Notification**: Displays success/error messages
+4. Build for production:
+   ```
+   npm run build
+   ```
 
 ## Usage
 
-1. Use the welcome screen to load a random task or upload a JSON task file
-2. Examine the examples to understand the pattern
-3. Use the editing tools to solve the test input
-4. Submit your solution to verify correctness
+1. **Load a puzzle**: Choose between ARC-AGI 1 and ARC-AGI 2, then select a task from the training or evaluation sets.
+2. **Study examples**: Review the provided examples to understand the pattern.
+3. **Create solution**: Use the editing tools to create your solution for the test input.
+4. **Validate**: Submit your solution to check if it's correct.
+
+## Features
+
+- **Challenge Version Selection**: Switch between ARC-AGI 1 and ARC-AGI 2 datasets
+- **Example Magnification**: Click on examples to expand them for easier analysis
+- **Multiple Editing Tools**: Edit mode, select mode, and flood fill for efficient grid creation
+- **Symbol Picker**: Quickly select symbols with visual color indicators
+- **Responsive Design**: Works on desktops, tablets, and mobile devices
+
+## Deployment
+
+### GitHub Pages Deployment
+
+This application is configured for easy deployment to GitHub Pages. You can deploy it in two ways:
+
+#### Automatic Deployment (GitHub Actions)
+
+1. Fork or push this repository to your GitHub account
+2. Ensure the repository name is updated in `vue.config.js`:
+   ```js
+   publicPath: process.env.NODE_ENV === 'production'
+     ? '/your-repo-name/'  // Update this line
+     : '/'
+   ```
+3. Enable GitHub Pages in your repository settings:
+   - Go to Settings → Pages
+   - Set Source to "GitHub Actions"
+4. Push to the main branch, and the GitHub Action will automatically build and deploy the site
+
+#### Manual Deployment
+
+1. Update the `publicPath` in `vue.config.js` with your repository name
+2. Build the project:
+   ```
+   npm run build
+   ```
+3. Deploy to GitHub Pages:
+   ```
+   npm install -g gh-pages
+   npm run deploy
+   ```
+
+### Accessing Your Deployed Application
+
+After deployment, your application will be available at:
+`https://yourusername.github.io/your-repo-name/`
+
+## Built With
+
+- [Vue.js](https://vuejs.org/) - The web framework used
+- [Vuex](https://vuex.vuejs.org/) - State management
+- [GitHub API](https://docs.github.com/en/rest) - For accessing ARC task data
 
 ## License
 
-Same as the original ARC project. 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Original ARC challenge by François Chollet
+- ARC-AGI 2 challenge by the ARC Prize Team 
