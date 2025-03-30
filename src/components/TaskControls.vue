@@ -26,6 +26,52 @@
     </div>
     
     <div class="control-section">
+      <h3 class="section-title">Test Input Controls</h3>
+      
+      <div class="test-navigation">
+        <div class="counter-display">
+          Test {{ currentTestIndex + 1 }} / {{ totalTestCount }}
+        </div>
+        <div class="nav-button-group">
+          <button 
+            class="btn btn-small nav-btn"
+            @click="$emit('previous-test')"
+            :disabled="currentTestIndex <= 0"
+          >
+            <span class="material-icons">navigate_before</span> Previous
+          </button>
+          <button 
+            class="btn btn-small nav-btn"
+            @click="$emit('next-test')"
+            :disabled="currentTestIndex >= totalTestCount - 1"
+          >
+            Next <span class="material-icons">navigate_next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="control-section">
+      <h3 class="section-title">Validate Solution</h3>
+      
+      <button 
+        class="btn btn-success validate-btn" 
+        @click="$emit('validate-solution')"
+      >
+        <span class="material-icons">check_circle</span> 
+        Submit Solution
+      </button>
+      
+      <button 
+        class="btn btn-secondary show-solution-btn" 
+        @click="$emit('show-solution')"
+      >
+        <span class="material-icons">visibility</span> 
+        Show Solution
+      </button>
+    </div>
+    
+    <div class="control-section">
       <h3 class="section-title">Load Task</h3>
       
       <div class="load-options">
@@ -81,52 +127,6 @@
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="control-section">
-      <h3 class="section-title">Test Input Controls</h3>
-      
-      <div class="test-navigation">
-        <div class="counter-display">
-          Test {{ currentTestIndex + 1 }} / {{ totalTestCount }}
-        </div>
-        <div class="nav-button-group">
-          <button 
-            class="btn btn-small nav-btn"
-            @click="$emit('previous-test')"
-            :disabled="currentTestIndex <= 0"
-          >
-            <span class="material-icons">navigate_before</span> Previous
-          </button>
-          <button 
-            class="btn btn-small nav-btn"
-            @click="$emit('next-test')"
-            :disabled="currentTestIndex >= totalTestCount - 1"
-          >
-            Next <span class="material-icons">navigate_next</span>
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="control-section">
-      <h3 class="section-title">Validate Solution</h3>
-      
-      <button 
-        class="btn btn-success validate-btn" 
-        @click="$emit('validate-solution')"
-      >
-        <span class="material-icons">check_circle</span> 
-        Submit Solution
-      </button>
-      
-      <button 
-        class="btn btn-secondary show-solution-btn" 
-        @click="$emit('show-solution')"
-      >
-        <span class="material-icons">visibility</span> 
-        Show Solution
-      </button>
     </div>
   </div>
 </template>
