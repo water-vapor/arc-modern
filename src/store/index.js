@@ -150,6 +150,17 @@ export default createStore({
       commit('setArcVersion', version)
       return { success: true }
     },
+    setSubset({ commit, state }, subset) {
+      commit('setTask', {
+        train: state.trainExamples,
+        test: state.testPairs,
+        taskName: state.taskName,
+        taskIndex: state.currentTaskIndex,
+        subset: subset,
+        totalCount: state.tasksMetadata[subset]?.length || state.totalTaskCount
+      })
+      return { success: true }
+    },
     async loadTasksMetadata({ commit, getters }, subset) {
       try {
         const response = await axios.get(`${getters.apiEndpoint}/${subset}`)
@@ -235,6 +246,46 @@ export default createStore({
       } catch (error) {
         console.error('Error loading task:', error)
         return { success: false, error, isNavigation: true }
+      }
+    },
+    async loadTaskByHash({ commit, dispatch, state, getters }, { hash, subset }) {
+      try {
+        // First ensure we have metadata
+        let tasks = state.tasksMetadata[subset]
+        
+        if (!tasks) {
+          const metadataResult = await dispatch('loadTasksMetadata', subset)
+          if (!metadataResult.success) {
+            return { success: false, error: 'Failed to load tasks metadata' }
+          }
+          tasks = state.tasksMetadata[subset]
+        }
+        
+        // Find task by hash - the task name should be hash.json
+        const taskName = `${hash}.json`
+        const taskIndex = tasks.findIndex(task => task.name === taskName)
+        
+        if (taskIndex === -1) {
+          return { success: false, error: `Task with hash ${hash} not found in ${subset} dataset` }
+        }
+        
+        const task = tasks[taskIndex]
+        const taskResponse = await axios.get(task.download_url)
+        const { train, test } = taskResponse.data
+        
+        commit('setTask', {
+          train,
+          test,
+          taskName: task.name,
+          taskIndex,
+          subset,
+          totalCount: tasks.length
+        })
+        
+        return { success: true }
+      } catch (error) {
+        console.error('Error loading task by hash:', error)
+        return { success: false, error: `Failed to load task ${hash}: ${error.message}` }
       }
     },
     async loadTaskFromFile({ commit }, file) {

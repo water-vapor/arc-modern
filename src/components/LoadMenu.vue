@@ -29,10 +29,8 @@
     
     <div class="task-selector">
       <input 
-        type="number" 
-        v-model.number="taskId" 
-        min="1" 
-        placeholder="Task #"
+        v-model="taskInput" 
+        placeholder="Task # or Hash (e.g. 52df9849)"
         class="task-input"
       />
       <button 
@@ -68,7 +66,7 @@ export default {
       loading: false,
       selectedArcVersion: 2, // Default to ARC 2
       error: null,
-      taskId: 1
+      taskInput: '1'
     }
   },
   
@@ -80,11 +78,11 @@ export default {
   created() {
     // Initialize the selected version from the store
     this.selectedArcVersion = this.arcVersion
-    this.taskId = this.currentTaskIndex + 1
+    this.taskInput = (this.currentTaskIndex + 1).toString()
   },
   
   methods: {
-    ...mapActions(['loadTask', 'loadRandomTask', 'setSubset', 'setArcVersion']),
+    ...mapActions(['loadTask', 'loadTaskByHash', 'loadRandomTask', 'setSubset', 'setArcVersion']),
     
     async changeArcVersion() {
       try {
@@ -94,7 +92,7 @@ export default {
         const result = await this.setArcVersion(this.selectedArcVersion)
         if (result.success) {
           // Reset task index to 1 when changing versions (for display)
-          this.taskId = 1
+          this.taskInput = '1'
           await this.loadTask({ taskIndex: 1, subset: this.currentSubset })
         } else {
           this.error = result.error || 'Failed to change ARC version'
@@ -129,10 +127,27 @@ export default {
         this.loading = true
         this.error = null
         
-        const result = await this.loadTask({ taskIndex: this.taskId, subset: this.currentSubset })
+        // Check if input is a hash (8-character hex string) or a number
+        const isHash = /^[a-fA-F0-9]{8}$/.test(this.taskInput.trim())
         
-        if (!result.success) {
-          this.error = result.error || 'Failed to load task'
+        if (isHash) {
+          // Load by hash
+          const result = await this.loadTaskByHash({ hash: this.taskInput.trim(), subset: this.currentSubset })
+          if (!result.success) {
+            this.error = result.error || 'Failed to load task'
+          }
+        } else {
+          // Load by index (convert to number)
+          const taskIndex = parseInt(this.taskInput.trim(), 10)
+          if (isNaN(taskIndex) || taskIndex < 1) {
+            this.error = 'Please enter a valid task number or 8-character hash'
+            return
+          }
+          
+          const result = await this.loadTask({ taskIndex: taskIndex, subset: this.currentSubset })
+          if (!result.success) {
+            this.error = result.error || 'Failed to load task'
+          }
         }
       } catch (error) {
         this.error = error.message || 'An error occurred'
