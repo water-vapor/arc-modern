@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import GridComponent from './GridComponent.vue'
 
 export default {

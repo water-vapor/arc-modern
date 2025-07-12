@@ -67,12 +67,6 @@ export function parseSizeTuple(size) {
   return [height, width]
 }
 
-// Convert a 2D array to a Grid object
-export function convertArrayToGridObject(values) {
-  const height = values.length
-  const width = values[0].length
-  return new Grid(height, width, values)
-}
 
 // Calculate cell size for proper display
 export const MAX_CELL_SIZE = 50
@@ -84,32 +78,4 @@ export function calculateCellSize(height, width, containerHeight, containerWidth
   return Math.max(10, size) // Ensure minimum size of 10px
 }
 
-// Get color based on symbol
-export function getSymbolColor(symbol) {
-  const colors = [
-    '#FFFFFF', // 0: White
-    '#0074D9', // 1: Blue
-    '#FF4136', // 2: Red
-    '#2ECC40', // 3: Green
-    '#FFDC00', // 4: Yellow
-    '#B10DC9', // 5: Purple
-    '#FF851B', // 6: Orange
-    '#7FDBFF', // 7: Light Blue
-    '#39CCCC', // 8: Teal
-    '#85144b'  // 9: Maroon
-  ]
-  
-  return colors[symbol % colors.length]
-}
-
-// Display error message (to be implemented in components)
-export function showError(message) {
-  console.error(message)
-  return message
-}
-
-// Display info message (to be implemented in components)
-export function showInfo(message) {
-  console.info(message)
-  return message
-} 
+ 

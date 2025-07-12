@@ -30,10 +30,6 @@ export default createStore({
     arcVersion: 2, // Default to ARC 2
   },
   getters: {
-    currentTestInput(state) {
-      if (state.testPairs.length === 0) return null
-      return state.testPairs[state.currentTestPairIndex]?.input || null
-    },
     currentTestOutput(state) {
       if (state.testPairs.length === 0) return null
       return state.testPairs[state.currentTestPairIndex]?.output || null
