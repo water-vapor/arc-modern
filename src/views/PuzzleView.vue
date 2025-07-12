@@ -41,11 +41,10 @@
               </select>
               
               <input 
-                type="number" 
-                v-model.number="initialTaskIndex" 
-                min="1" 
+                type="text" 
+                v-model="initialTaskIndex" 
                 class="task-number-input"
-                placeholder="Task #"
+                placeholder="Task # or Hash (e.g. 52df9849)"
               >
             </div>
             
@@ -217,7 +216,7 @@ export default {
     })
     
     // Additional state
-    const initialTaskIndex = ref(1) // Start at 1 for 1-indexed UI
+    const initialTaskIndex = ref('1') // Start at 1 for 1-indexed UI
     const initialSubset = ref('training')
     
     // Add a computed property for grid container size
@@ -252,21 +251,37 @@ export default {
     }
     
     const loadSpecificTask = async (params) => {
-      // Convert 1-indexed input to 0-indexed for store
-      if (params.taskIndex) {
-        params.taskIndex = params.taskIndex - 1
-      }
+      let result
       
-      const result = await store.dispatch('loadTask', params)
-      
-      if (result.success) {
-        taskLoaded.value = true
-        showNotification(`Task ${params.taskIndex + 1} loaded successfully`, 'success')
-      } else {
-        if (result.isNavigation) {
-          showNotification(result.error, 'info')
+      if (params.isHash) {
+        // Load by hash
+        result = await store.dispatch('loadTaskByHash', { 
+          hash: params.hash, 
+          subset: params.subset 
+        })
+        if (result.success) {
+          taskLoaded.value = true
+          showNotification('Task loaded successfully', 'success')
         } else {
-          showNotification('Failed to load task: ' + result.error, 'error')
+          showNotification(result.error || 'Failed to load task', 'error')
+        }
+      } else {
+        // Convert 1-indexed input to 0-indexed for store
+        if (params.taskIndex) {
+          params.taskIndex = params.taskIndex - 1
+        }
+        
+        result = await store.dispatch('loadTask', params)
+        
+        if (result.success) {
+          taskLoaded.value = true
+          showNotification(`Task ${params.taskIndex + 1} loaded successfully`, 'success')
+        } else {
+          if (result.isNavigation) {
+            showNotification(result.error, 'info')
+          } else {
+            showNotification('Failed to load task: ' + result.error, 'error')
+          }
         }
       }
     }
@@ -376,13 +391,38 @@ export default {
     
     const loadInitialTask = async () => {
       const metadataResult = await store.dispatch('loadTasksMetadata', initialSubset.value)
-      if (metadataResult.success) {
+      if (!metadataResult.success) {
+        showNotification('Failed to load tasks data', 'error')
+        return
+      }
+
+      // Check if input is a hash (8-character hex string) or a number
+      const isHash = /^[a-fA-F0-9]{8}$/.test(initialTaskIndex.value.toString().trim())
+      
+      if (isHash) {
+        // Load by hash
+        const result = await store.dispatch('loadTaskByHash', { 
+          hash: initialTaskIndex.value.toString().trim(), 
+          subset: initialSubset.value 
+        })
+        if (result.success) {
+          taskLoaded.value = true
+          showNotification('Task loaded successfully', 'success')
+        } else {
+          showNotification(result.error || 'Failed to load task', 'error')
+        }
+      } else {
+        // Load by index
+        const taskIndex = parseInt(initialTaskIndex.value.toString().trim(), 10)
+        if (isNaN(taskIndex) || taskIndex < 1) {
+          showNotification('Please enter a valid task number or 8-character hash', 'error')
+          return
+        }
+        
         loadSpecificTask({
-          taskIndex: initialTaskIndex.value, // Will be converted to 0-indexed in loadSpecificTask
+          taskIndex: taskIndex, // Will be converted to 0-indexed in loadSpecificTask
           subset: initialSubset.value
         })
-      } else {
-        showNotification('Failed to load tasks data', 'error')
       }
     }
     

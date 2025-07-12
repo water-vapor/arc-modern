@@ -261,21 +261,15 @@ export default createStore({
           tasks = state.tasksMetadata[subset]
         }
         
-        // Debug log to see the task structure
-        console.log('Available tasks:', tasks.map(t => t.name).slice(0, 5))
-        
         // Find task by hash - the task name should be hash.json
         const taskName = `${hash}.json`
         const taskIndex = tasks.findIndex(task => task.name === taskName)
-        
-        console.log(`Looking for: ${taskName}, found at index: ${taskIndex}`)
         
         if (taskIndex === -1) {
           return { success: false, error: `Task with hash ${hash} not found in ${subset} dataset` }
         }
         
         const task = tasks[taskIndex]
-        console.log('Found task:', task)
         
         if (!task || !task.download_url) {
           return { success: false, error: `Invalid task data for hash ${hash}` }

@@ -29,9 +29,13 @@
     
     <div class="task-selector">
       <input 
-        v-model="taskInput" 
+        type="text"
+        inputmode="text"
+        v-model="taskInput"
         placeholder="Task # or Hash (e.g. 52df9849)"
-        class="task-input"
+        autocomplete="off"
+        spellcheck="false"
+        style="flex: 1; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;"
       />
       <button 
         :class="['load-button']"
@@ -93,7 +97,7 @@ export default {
         if (result.success) {
           // Reset task index to 1 when changing versions (for display)
           this.taskInput = '1'
-          await this.loadTask({ taskIndex: 1, subset: this.currentSubset })
+          await this.loadTask({ taskIndex: 0, subset: this.currentSubset })
         } else {
           this.error = result.error || 'Failed to change ARC version'
         }
@@ -110,7 +114,7 @@ export default {
         this.error = null
         
         await this.setSubset(subset)
-        const result = await this.loadTask({ taskIndex: 1, subset })
+        const result = await this.loadTask({ taskIndex: 0, subset })
         
         if (!result.success && !result.isNavigation) {
           this.error = result.error || 'Failed to load task'
@@ -144,7 +148,7 @@ export default {
             return
           }
           
-          const result = await this.loadTask({ taskIndex: taskIndex, subset: this.currentSubset })
+          const result = await this.loadTask({ taskIndex: taskIndex - 1, subset: this.currentSubset })
           if (!result.success) {
             this.error = result.error || 'Failed to load task'
           }

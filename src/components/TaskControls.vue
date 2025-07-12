@@ -116,11 +116,10 @@
             </select>
             
             <input 
-              type="number" 
-              v-model.number="taskIndex" 
-              min="1" 
+              type="text" 
+              v-model="taskIndex" 
               class="task-index-input"
-              placeholder="Task #"
+              placeholder="Task # or Hash (e.g. 52df9849)"
             >
             
             <button class="btn" @click="loadSpecificTask">Load</button>
@@ -180,14 +179,14 @@ export default {
   ],
   setup(props, { emit }) {
     const store = useStore()
-    const taskIndex = ref(props.currentTaskIndex >= 0 ? props.currentTaskIndex + 1 : 1) // Convert to 1-indexed
+    const taskIndex = ref(props.currentTaskIndex >= 0 ? (props.currentTaskIndex + 1).toString() : '1') // Convert to 1-indexed string
     const subset = ref(props.currentSubset)
     const selectedArcVersion = ref(store.state.arcVersion)
     
     onMounted(() => {
       // Update the task index when props change
       if (props.currentTaskIndex >= 0) {
-        taskIndex.value = props.currentTaskIndex + 1 // Convert to 1-indexed
+        taskIndex.value = (props.currentTaskIndex + 1).toString() // Convert to 1-indexed string
       }
     })
     
@@ -201,16 +200,35 @@ export default {
     }
     
     const loadSpecificTask = () => {
-      emit('load-task', { 
-        taskIndex: taskIndex.value, // Will be converted to 0-indexed in parent component
-        subset: subset.value
-      })
+      // Check if input is a hash (8-character hex string) or a number
+      const isHash = /^[a-fA-F0-9]{8}$/.test(taskIndex.value.toString().trim())
+      
+      if (isHash) {
+        // Emit with hash flag
+        emit('load-task', { 
+          hash: taskIndex.value.toString().trim(),
+          subset: subset.value,
+          isHash: true
+        })
+      } else {
+        // Emit with numeric index
+        const numericIndex = parseInt(taskIndex.value.toString().trim(), 10)
+        if (isNaN(numericIndex) || numericIndex < 1) {
+          // Could show error here, but let parent handle validation
+          return
+        }
+        emit('load-task', { 
+          taskIndex: numericIndex, // Will be converted to 0-indexed in parent component
+          subset: subset.value,
+          isHash: false
+        })
+      }
     }
     
     const changeArcVersion = () => {
       store.dispatch('setArcVersion', selectedArcVersion.value)
       // Reset task index to 1 when changing versions
-      taskIndex.value = 1
+      taskIndex.value = '1'
     }
     
     return {
